@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kattappa Wines - Fine Wine Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5D4037;
+            --secondary-color: #A1887F;
+            --background-color: #F5F5F5;
+            --text-color: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 3rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0,0,0,0.3), transparent);
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 2;
+            perspective: 500px;
+            display: inline-block;
+        }
+
+        .header h1 .letter {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(50px) rotateX(-90deg);
+            animation: fallIn 0.8s ease forwards;
+        }
+
+        @keyframes fallIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            animation: fadeIn 1s 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .wine-collection {
+            display: flex;
+            justify-content: space-around;
+            padding: 4rem 2rem;
+            flex-wrap: wrap;
+        }
+
+        .wine-bottle {
+            width: 300px;
+            margin: 2rem;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+            transform-style: preserve-3d;
+            opacity: 0;
+            animation: cardAppear 1s forwards;
+        }
+
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(-20px);
+            }
+        }
+
+        .wine-bottle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg, 
+                transparent, 
+                rgba(255,255,255,0.1), 
+                transparent
+            );
+            transform: skew(45deg) translateX(-150%);
+            transition: all 0.6s ease;
+        }
+
+        .wine-bottle:hover {
+            transform: scale(1.05) rotateX(5deg);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .wine-bottle:hover::before {
+            transform: skew(45deg) translateX(150%);
+        }
+
+        .wine-bottle:hover .wine-canvas {
+            transform: scale(1.1) rotate(3deg);
+        }
+
+        .wine-canvas {
+            width: 100%;
+            height: 400px;
+            background-color: #f9f9f9;
+            transition: transform 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .wine-details {
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .wine-details h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .wine-details h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-color);
+            transform: translateX(-50%) scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .wine-bottle:hover .wine-details h2::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .wine-details .description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .wine-details .wine-stats {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+
+        .wine-stats .stat {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .wine-bottle:hover .wine-stats .stat {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .wine-bottle {
+                width: 100%;
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 id="heroTitle"></h1>
+        <p>Crafting Extraordinary Experiences, One Bottle at a Time</p>
+    </div>
+
+    <div class="wine-collection" id="wineCollection">
+        <!-- Wine bottles will be dynamically added here -->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // Animated Title Effect
+        const titleText = "Kattappa Wines";
+        const heroTitle = document.getElementById('heroTitle');
+
+        titleText.split('').forEach((char, index) => {
+            const span = document.createElement('span');
+            span.textContent = char;
+            span.className = 'letter';
+            span.style.animationDelay = `${index * 0.1}s`;
+            heroTitle.appendChild(span);
+        });
+
+        const wines = [
+            {
+                name: "Royal Red Reserve",
+                description: "A bold and complex red wine with deep notes of blackberry, dark cherry, and a hint of oak. Aged to perfection.",
+                modelPath: "scene.glb",
+                stats: {
+                    alcohol: "14.5%",
+                    region: "Napa Valley",
+                    aging: "18 months"
+                }
+            },
+            {
+                name: "Crisp White Elegance",
+                description: "A refreshing white wine with bright citrus notes, subtle hints of green apple, and a clean, mineral finish.",
+                modelPath: "scene.glb",
+                stats: {
+                    alcohol: "12.5%",
+                    region: "Sonoma Coast",
+                    aging: "6 months"
+                }
+            },
+            {
+                name: "Sunset Rosé",
+                description: "A delicate rosé with enchanting aromas of strawberry, watermelon, and a gentle floral undertone. Perfect for summer evenings.",
+                modelPath: "scene.glb",
+                stats: {
+                    alcohol: "13%",
+                    region: "Provence",
+                    aging: "3 months"
+                }
+            }
+        ];
+
+        function createWineBottle(wine) {
+            const wineElement = document.createElement('div');
+            wineElement.className = 'wine-bottle';
+            
+            const canvasContainer = document.createElement('div');
+            canvasContainer.className = 'wine-canvas';
+            wineElement.appendChild(canvasContainer);
+
+            const details = document.createElement('div');
+            details.className = 'wine-details';
+            details.innerHTML = `
+                <h2>${wine.name}</h2>
+                <p class="description">${wine.description}</p>
+                <div class="wine-stats">
+                    <div class="stat">
+                        <small>Alcohol</small>
+                        <div class="stat-value">${wine.stats.alcohol}</div>
+                    </div>
+                    <div class="stat">
+                        <small>Region</small>
+                        <div class="stat-value">${wine.stats.region}</div>
+                    </div>
+                    <div class="stat">
+                        <small>Aging</small>
+                        <div class="stat-value">${wine.stats.aging}</div>
+                    </div>
+                </div>
+            `;
+            wineElement.appendChild(details);
+
+            document.getElementById('wineCollection').appendChild(wineElement);
+
+            // Three.js Scene Setup
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(300, 400);
+            canvasContainer.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+            const pointLight = new THREE.PointLight(0xffffff, 1);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            // Camera Position
+            camera.position.z = 5;
+
+            // Model Loader
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                wine.modelPath,
+                (gltf) => {
+                    const model = gltf.scene;
+                    model.scale.set(2, 2, 2);
+                    scene.add(model);
+
+                    // Rotation and Hover Animation
+                    let rotationSpeed = 0.02;
+                    function animate() {
+                        requestAnimationFrame(animate);
+                        model.rotation.y += rotationSpeed;
+                        renderer.render(scene, camera);
+                    }
+                    animate();
+
+                    // Interactive hover effect
+                    canvasContainer.addEventListener('mouseenter', () => {
+                        rotationSpeed = 0.05;
+                    });
+                    canvasContainer.addEventListener('mouseleave', () => {
+                        rotationSpeed = 0.02;
+                    });
+                },
+                undefined,
+                (error) => {
+                    console.error('Error loading model:', error);
+                }
+            );
+        }
+
+        // Create wine bottles
+        wines.forEach(createWineBottle);
+    </script>
+</body>
+</html>
